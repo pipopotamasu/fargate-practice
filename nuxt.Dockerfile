@@ -11,6 +11,9 @@ ENV NODE_ENV production
 ENV HOST 0.0.0.0
 EXPOSE 3000
 
+# for alpile
+RUN apk add --no-cache ca-certificates
+
 # this command is execed when build container
 RUN yarn install
 
