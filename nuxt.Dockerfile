@@ -1,4 +1,4 @@
-FROM node:8.12
+FROM node:8.12-alpine
 
 ENV APP_HOME /nuxt
 WORKDIR $APP_HOME
@@ -10,6 +10,9 @@ ENV NODE_ENV production
 # IMPORTANT!: specify host
 ENV HOST 0.0.0.0
 EXPOSE 3000
+
+# for alpile
+RUN apk add --no-cache ca-certificates
 
 # this command is execed when build container
 RUN yarn install

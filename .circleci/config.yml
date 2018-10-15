@@ -18,6 +18,7 @@ jobs:
 
     steps:
       - checkout
+      - run: apk add --no-cache ca-certificates
 
       # Download and cache dependencies
       - restore_cache:
