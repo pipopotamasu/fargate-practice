@@ -1,7 +1,8 @@
-FROM nginx:1.15-alpine
+# デフォルトは localhost
+# 既にAPP_SERVERという環境変数が与えられていればそれを使い、なければlocalhostを使う
+[ -z "$APP_SERVER" ] && APP_SERVER=localhost
 
-COPY nginx /etc/nginx/conf.d
-COPY entrypoint.sh /entrypoint.sh
+# nginx.conf の該当設定箇所を文字列置換
+sed "s|%APP_SERVER%|$APP_SERVER|g" -i /etc/nginx/conf.d/default.conf
 
-# CMD は entrypoint.sh で上書き
-CMD [ "/bin/sh", "/entrypoint.sh" ]
+/usr/sbin/nginx -g "daemon off;"
