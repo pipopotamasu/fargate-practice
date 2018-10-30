@@ -29,7 +29,6 @@ jobs:
           - v2-dependencies-
 
       - run: yarn install
-      - run: yarn run build
 
       - save_cache:
           paths:
@@ -42,8 +41,6 @@ jobs:
             - .
 
   image_push:
-    docker:
-      - image: docker:17.05.0-ce-git
     working_directory: ~/repo
     steps:
       - setup_remote_docker
@@ -56,6 +53,7 @@ jobs:
               py-pip=9.0.0-r1
             pip install \
               awscli==1.16.10
+      - run: yarn run build
       - run:
           name: aws login
           command: $(aws ecr get-login --region ap-northeast-1 --no-include-email)
