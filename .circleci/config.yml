@@ -45,6 +45,8 @@ jobs:
       - image: node:8.12-alpine
     working_directory: ~/repo
     steps:
+      # for alpine
+      - run: apk add --no-cache ca-certificates
       - setup_remote_docker
       - attach_workspace:
           at: .
