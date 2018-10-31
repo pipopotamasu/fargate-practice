@@ -42,11 +42,9 @@ jobs:
 
   image_push:
     docker:
-      - image: node:8.12-alpine
+      - image: docker:17.05.0-ce-git
     working_directory: ~/repo
     steps:
-      # for alpine
-      - run: apk add --no-cache ca-certificates
       - setup_remote_docker
       - attach_workspace:
           at: .
@@ -57,7 +55,8 @@ jobs:
               py-pip=9.0.0-r1
             pip install \
               awscli==1.16.10
-      - run: yarn run build
+      - run: apk add --update nodejs nodejs-npm
+      - run: npm run build
       - run:
           name: aws login
           command: $(aws ecr get-login --region ap-northeast-1 --no-include-email)
