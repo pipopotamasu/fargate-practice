@@ -17,7 +17,7 @@ services:
     volumes:
       - ./logs/nginx/:/var/log/nginx/
       # dockerfileのCMDで実行しているsedでnginxのhostを書き換えているため、マウントしない
-      # - ./nginx:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
   
   nuxt:
     container_name: nuxt
