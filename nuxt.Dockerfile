@@ -1,4 +1,4 @@
-FROM node:8.12-alpine
+FROM node:10.13-alpine
 
 ENV APP_HOME /nuxt
 WORKDIR $APP_HOME
