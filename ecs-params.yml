@@ -1,0 +1,28 @@
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  task_size:
+    mem_limit: 2GB
+    cpu_limit: 512
+  services:
+    nginx:
+      # そのコンテナが何らかの理由で失敗または停止すると、タスクに含まれる他のすべてのコンテナは停止する
+      essential: true
+      # CPU使用の優先度、コンテナが3つあってそれぞれ1024,512,512で割り当てられていたら、優先度が50%,25%,25%となる
+      cpu_shares: 256
+      mem_limit: 1024MB
+      mem_reservation: 1024MB
+    nuxt:
+      essential: true
+      cpu_shares: 256
+      mem_limit: 1024MB
+      mem_reservation: 1024MB
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - subnet-9f7fb4c7
+      security_groups:
+        - sg-000c9d0124d53f927
+      assign_public_ip: ENABLED

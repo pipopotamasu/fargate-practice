@@ -1,0 +1,36 @@
+version: "3"
+services:
+  nginx:
+    container_name: nginx
+    # 実行時は${AWS_ACCOUNT_ID}を書き換える
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/nginx_custom:latest
+    depends_on:
+      - nuxt
+    ports:
+      - "80:80"
+    environment:
+      APP_SERVER: localhost
+    entrypoint:
+      - /bin/sh
+      - /entrypoint.sh
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: fargate-practice
+        awslogs-region: ap-northeast-1
+        awslogs-stream-prefix: nginx
+
+  nuxt:
+    container_name: nuxt
+    # 実行時は${AWS_ACCOUNT_ID}を書き換える
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/nuxt:42
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: fargate-practice
+        awslogs-region: ap-northeast-1
+        awslogs-stream-prefix: nuxt
