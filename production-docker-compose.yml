@@ -9,7 +9,7 @@ services:
     ports:
       - "80:80"
     environment:
-      APP_SERVER: localhost
+      APP_SERVER: 127.0.0.1
     entrypoint:
       - /bin/sh
       - /entrypoint.sh
