@@ -7,13 +7,14 @@ ECS_SERVICE_NAME = fargate-practice
 LOAD_BALANCING_CONTAINER_NAME = nginx
 LOAD_BALANCING_CONTAINER_PORT = 80
 TARGET_GROUP_ARN = arn:aws:elasticloadbalancing:ap-northeast-1:100535542918:targetgroup/fargate-practice-target/eef3f90a8a00d60b
-TIME_OUT = 10
+TIME_OUT = 15
 ECR_NGINX_REPO_NAME = nginx_custom
 NGINX_DOCKER_FILE_PATH = ./nginx.Dockerfile
+REGION = ap-northeast-1
 
 # ECS commands
 create_ecs_conf: # 手元の環境にecs-cliのconfigを作成する
-	ecs-cli configure --cluster ${CLUSTER_NAME} --region ap-northeast-1 --default-launch-type FARGATE --config-name ${CLUSTER_NAME}
+	ecs-cli configure --cluster ${CLUSTER_NAME} --region ${REGION} --default-launch-type FARGATE --config-name ${CLUSTER_NAME}
 
 create_ecs_credential: # 手元の環境にecs-cliのcredentialsを作成する。引数にAWS_ACCESS_KEY_IDとAWS_SECRET_ACCESS_KEYを渡してください
 	ecs-cli configure profile --access-key ${AWS_ACCESS_KEY_ID} --secret-key ${AWS_SECRET_ACCESS_KEY} --profile-name ${PROFILE_NAME}
@@ -23,6 +24,9 @@ create_task_definition: # タスク定義の作成、すでに存在している
 
 deploy: # クラスターにデプロイ(タスク定義の作成を含む)
 	ecs-cli compose --project-name ${ECS_SERVICE_NAME} --file ${PRODUCTION_COMPOSE_FILE_NAME} service up --timeout ${TIME_OUT} --create-log-groups --aws-profile ${PROFILE_NAME} --cluster-config ${CLUSTER_NAME} --container-name ${LOAD_BALANCING_CONTAINER_NAME} --container-port ${LOAD_BALANCING_CONTAINER_PORT} --target-group-arn ${TARGET_GROUP_ARN}
+
+deploy_ci: # CI用のデプロイコマンド
+	ecs-cli compose --project-name ${ECS_SERVICE_NAME} --file ${PRODUCTION_COMPOSE_FILE_NAME} service up --timeout ${TIME_OUT} --create-log-groups --cluster-config ${CLUSTER_NAME} --container-name ${LOAD_BALANCING_CONTAINER_NAME} --container-port ${LOAD_BALANCING_CONTAINER_PORT} --target-group-arn ${TARGET_GROUP_ARN} --region ${REGION} --launch-type FARGATE
 
 container_status: # クラスターの実行中コンテナ確認
 	ecs-cli compose --project-name ${ECS_SERVICE_NAME} --file ${PRODUCTION_COMPOSE_FILE_NAME} service ps --cluster-config ${CLUSTER_NAME} --aws-profile ${PROFILE_NAME}
@@ -38,7 +42,7 @@ destroy: # サービスの削除(※触るな危険)
 
 # AWS commands
 aws_login:
-	aws ecr get-login --no-include-email --region ap-northeast-1 --profile ${PROFILE_NAME}
+	aws ecr get-login --no-include-email --region ${REGION} --profile ${PROFILE_NAME}
 
 # Docker commands
 build_nginx:
